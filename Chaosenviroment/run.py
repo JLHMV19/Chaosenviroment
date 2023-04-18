@@ -98,9 +98,9 @@ def login():
     '''
 
 
-@app.route('/sistemadelcaos')
+@app.route('/home')
 def mostrarproyectos():
-    return 'aqui tendre la maquina de API'
+    return 'ola sexoso, bienvenido al sex'
 
 #Ejecutar nuestra app cuando ejecutemos este archivo run.py
 
