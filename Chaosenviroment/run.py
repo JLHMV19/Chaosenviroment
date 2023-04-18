@@ -9,7 +9,7 @@ app = Flask(__name__)
 def holamundo():
     return 'sistema del caos activado'
 
-@app.route('/mis-proyectos')
+@app.route('/sistemadelcaos')
 def mostrarproyectos():
     return 'aqui tendre la maquina de API'
 
