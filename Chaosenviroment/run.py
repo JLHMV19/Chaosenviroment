@@ -43,9 +43,24 @@ def register():
         flash('Registro exitoso. Por favor, inicie sesión.')
         return redirect(url_for('login'))
     
-    return render_template('register.html')
-
-
+    return '''
+        <h2>Registro</h2>
+        <form method="POST">
+        <div class="form-group">
+      <label for="name">Nombre:</label>
+      <input type="text" name="name" id="name" class="form-control" required>
+        </div>
+        <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" name="email" id="email" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Contraseña:</label>
+      <input type="password" name="password" id="password" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Registrarse</button>
+  </form>
+        '''
 
 
 @app.route('/login', methods=['GET', 'POST'])
