@@ -68,6 +68,12 @@ def register():
         '''
 
 
+@app.route('/sesion')
+def mostrarproyectos():
+    return 'ola sexoso, bienvenido al sex'
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -83,7 +89,7 @@ def login():
 
         if user:
             # Iniciar sesión exitosamente
-            return redirect(url_for('home'))
+            return redirect(url_for('sesion'))
         else:
             # Mostrar un mensaje de error
             return 'Nombre de usuario o contraseña incorrectos'
@@ -96,11 +102,6 @@ def login():
             <p><input type="submit" value="Iniciar sesión"></p>
         </form>
     '''
-
-
-@app.route('/home')
-def mostrarproyectos():
-    return 'ola sexoso, bienvenido al sex'
 
 #Ejecutar nuestra app cuando ejecutemos este archivo run.py
 
