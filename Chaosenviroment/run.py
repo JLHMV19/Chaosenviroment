@@ -1,5 +1,6 @@
 #Importar
 from flask import Flask
+from flask_mysqldb import MySQL
 
 #Crear app medante instancia
 app = Flask(__name__)
