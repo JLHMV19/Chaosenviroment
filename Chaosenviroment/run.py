@@ -1,9 +1,14 @@
 #Importar
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
+import os
 
 #Crear app medante instancia
 app = Flask(__name__)
+
+#secret key
+app.config['SECRET_KEY'] = os.urandom(24)
+
 
 #conexion MySQL
 app.config['MYSQL_HOST'] = 'localhost'
@@ -23,7 +28,7 @@ def holamundo():
 def register():
     if request.method == 'POST':
         # Obtener los datos del formulario
-        name = request.form['name']
+        username = request.form['username']
         email = request.form['email']
         password = request.form['password']
         
@@ -31,7 +36,7 @@ def register():
         cur = mysql.connection.cursor()
         
         # Insertar los datos en la tabla de usuarios
-        cur.execute("INSERT INTO users (name, email, password) VALUES (%s, %s, %s)", (name, email, password))
+        cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)", (username, email, password))
         
         # Guardar los cambios en la base de datos
         mysql.connection.commit()
@@ -47,8 +52,8 @@ def register():
         <h2>Registro</h2>
         <form method="POST">
         <div class="form-group">
-      <label for="name">Nombre:</label>
-      <input type="text" name="name" id="name" class="form-control" required>
+      <label for="username">Nombre:</label>
+      <input type="text" name="username" id="name" class="form-control" required>
         </div>
         <div class="form-group">
       <label for="email">Email:</label>
