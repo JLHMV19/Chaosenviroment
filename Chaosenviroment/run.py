@@ -1,7 +1,9 @@
 #Importar
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 import os
+from flask_login import login_required, current_user
+
 
 #Crear app medante instancia
 app = Flask(__name__)
@@ -68,10 +70,10 @@ def register():
         '''
 
 
-@app.route('/sesion')
-def mostrarproyectos():
-    return 'ola sexoso, bienvenido al sex'
-
+@app.route('/privado')
+@login_required
+def privado():
+    return 'Esta es una ruta privada'
 
 
 @app.route('/login', methods=['GET', 'POST'])
