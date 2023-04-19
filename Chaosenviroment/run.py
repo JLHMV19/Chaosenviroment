@@ -3,14 +3,11 @@ from flask import Flask, request, redirect, url_for, flash
 from flask_mysqldb import MySQL
 import os
 from flask_login import login_required, current_user
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
 
 #Crear app medante instancia
 app = Flask(__name__)
-
-#secret key
-app.config['SECRET_KEY'] = os.urandom(24)
-
 
 #conexion MySQL
 app.config['MYSQL_HOST'] = 'localhost'
@@ -19,6 +16,60 @@ app.config['MYSQL_PASSWORD'] = 'BadLands2045.'
 app.config['MYSQL_DB'] = 'chaossystem'
 
 mysql = MySQL(app)
+
+#crear objeto de autenticacion
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+#definicio de la clase usuario
+class User(UserMixin):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+#metodo para verificacion de usuario
+def verificar_login(username, password):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM users WHERE username = %s AND password = %s', (username, password))
+    user_data = cur.fetchone()
+    cur.close()
+    if user_data:
+        return User(user_data[0], user_data[1], user_data[2])
+    else:
+        return None
+
+# Crea una función load_user(user_id) que busca y devuelve un objeto User en la base de datos correspondiente al user_id proporcionado.
+@login_manager.user_loader
+def load_user(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+    user_data = cur.fetchone()
+    cur.close()
+    if user_data:
+        return User(user_data[0], user_data[1], user_data[2])
+    else:
+        return None
+
+# Crea una función de verificación de inicio de sesión (login) que recibe un usuario y una contraseña y devuelve un objeto User si la autenticación es correcta o None en caso contrario.
+def verificar_login(username, password):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM users WHERE username = %s AND password = %s', (username, password))
+    user_data = cur.fetchone()
+    cur.close()
+    if user_data:
+        return User(user_data[0], user_data[1], user_data[2])
+    else:
+        return None
+
+# Agrega la decoración @login_manager.unauthorized_handler encima de la función de verificación de inicio de sesión para manejar la redirección a la página de inicio de sesión en caso de que el usuario no esté autenticado.
+@login_manager.unauthorized_handler
+def unauthorized():
+    return "no tai registrao"
+
+#secret key
+app.config['SECRET_KEY'] = os.urandom(24)
+
 
 #Crear rutas con sus correspondientes funciones
 @app.route('/')
@@ -70,12 +121,6 @@ def register():
         '''
 
 
-@app.route('/privado')
-@login_required
-def privado():
-    return 'Esta es una ruta privada'
-
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -104,6 +149,11 @@ def login():
             <p><input type="submit" value="Iniciar sesión"></p>
         </form>
     '''
+
+@app.route('/privado')
+@login_required
+def privado():
+    return 'Bienvenido al sistema del caos mi estimado wapeton'
 
 #Ejecutar nuestra app cuando ejecutemos este archivo run.py
 
