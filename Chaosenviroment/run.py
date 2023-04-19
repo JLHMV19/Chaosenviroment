@@ -38,7 +38,8 @@ def verificar_login(username, password):
     else:
         return None
 
-# Crea una función load_user(user_id) que busca y devuelve un objeto User en la base de datos correspondiente al user_id proporcionado.
+# Crea una función load_user(user_id) que busca y devuelve un objeto User en la base de 
+# datos correspondiente al user_id proporcionado.
 @login_manager.user_loader
 def load_user(id):
    cur = mysql.connection.cursor()
@@ -50,7 +51,8 @@ def load_user(id):
    else:
      return None
 
-# Crea una función de verificación de inicio de sesión (login) que recibe un usuario y una contraseña y devuelve un objeto User si la autenticación es correcta o None en caso contrario.
+# Crea una función de verificación de inicio de sesión (login) que recibe un usuario y una contraseña y 
+# devuelve un objeto User si la autenticación es correcta o None en caso contrario.
 def verificar_login(username, password):
     cur = mysql.connection.cursor()
     cur.execute('SELECT username, password FROM users WHERE username = %s AND password = %s', (username, password))
@@ -61,7 +63,9 @@ def verificar_login(username, password):
     else:
         return None
 
-# Agrega la decoración @login_manager.unauthorized_handler encima de la función de verificación de inicio de sesión para manejar la redirección a la página de inicio de sesión en caso de que el usuario no esté autenticado.
+# Agrega la decoración @login_manager.unauthorized_handler encima de la función de verificación 
+# de inicio de sesión para manejar la redirección a la página de inicio de sesión en caso de que el usuario 
+# no esté autenticado.
 @login_manager.unauthorized_handler
 def unauthorized():
     return "no tai registrao"
