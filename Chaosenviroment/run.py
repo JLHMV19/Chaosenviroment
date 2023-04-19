@@ -91,7 +91,7 @@ def login():
 
         if user:
             # Iniciar sesión exitosamente
-            return redirect(url_for('sesion'))
+            return redirect(url_for('privado'))
         else:
             # Mostrar un mensaje de error
             return 'Nombre de usuario o contraseña incorrectos'
