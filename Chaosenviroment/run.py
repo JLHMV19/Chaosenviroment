@@ -41,20 +41,20 @@ def verificar_login(username, password):
 
 # Crea una función load_user(user_id) que busca y devuelve un objeto User en la base de datos correspondiente al user_id proporcionado.
 @login_manager.user_loader
-def load_user(user_id):
-    cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM users WHERE id = %s', (user_id,))
-    user_data = cur.fetchone()
-    cur.close()
-    if user_data:
-        return User(user_data[0], user_data[1], user_data[2])
-    else:
-        return None
+def load_user(id):
+   cur = mysql.connection.cursor()
+   cur.execute('SELECT * FROM users WHERE id = %s', (id))
+   user_data = cur.fetchone()
+   cur.close()
+   if user_data:
+      return User(user_data[0], user_data[1], user_data[2])
+   else:
+     return None
 
 # Crea una función de verificación de inicio de sesión (login) que recibe un usuario y una contraseña y devuelve un objeto User si la autenticación es correcta o None en caso contrario.
 def verificar_login(username, password):
     cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM users WHERE username = %s AND password = %s', (username, password))
+    cur.execute('SELECT username, password FROM users WHERE username = %s AND password = %s', (username, password))
     user_data = cur.fetchone()
     cur.close()
     if user_data:
@@ -127,10 +127,11 @@ def login():
         # Obtener los datos del formulario
         username = request.form['username']
         password = request.form['password']
+        id = request.form['id']
 
         # Verificar si los datos son correctos
         cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM users WHERE username = %s AND password = %s', (username, password))
+        cur.execute('SELECT * FROM users WHERE username = %s AND password = %s AND id = %s', (username, password, id))
         user = cur.fetchone()
         cur.close()
 
@@ -146,6 +147,7 @@ def login():
         <form method="post">
             <p>Nombre de usuario: <input type="text" name="username"></p>
             <p>Contraseña: <input type="password" name="password"></p>
+            <p>ID: <input type="number" name="id"</p>
             <p><input type="submit" value="Iniciar sesión"></p>
         </form>
     '''
