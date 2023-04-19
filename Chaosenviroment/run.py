@@ -5,7 +5,6 @@ import os
 from flask_login import login_required, current_user
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 
-
 #Crear app medante instancia
 app = Flask(__name__)
 
@@ -158,6 +157,5 @@ def privado():
     return 'Bienvenido al sistema del caos mi estimado wapeton'
 
 #Ejecutar nuestra app cuando ejecutemos este archivo run.py
-
 if __name__ == '__main__':
     app.run(debug=True)
