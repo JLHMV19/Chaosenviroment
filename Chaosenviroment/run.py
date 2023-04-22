@@ -80,7 +80,7 @@ def register():
   </form>
         '''
 
-  
+#funcion login_loader
 @login_manager.user_loader
 def load_user(user_id):
     cur = mysql.connection.cursor()
@@ -92,7 +92,7 @@ def load_user(user_id):
     else:
         return None
 
-
+#esta funcion verifica el login y devuelve el objeto user
 def verificar_login(username, password):
     cur = mysql.connection.cursor()
     cur.execute('SELECT * FROM users WHERE username = %s AND password = %s', (username, password))
@@ -103,8 +103,7 @@ def verificar_login(username, password):
     else:
         return None
 
-
-
+#esta es la ruta de ejecucion
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
