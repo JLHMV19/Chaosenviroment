@@ -27,49 +27,6 @@ class User(UserMixin):
         self.username = username
         self.password = password
 
-#metodo para verificacion de usuario
-def verificar_login(username, password):
-    cur = mysql.connection.cursor()
-    cur.execute('SELECT * FROM users WHERE username = %s AND password = %s', (username, password))
-    user_data = cur.fetchone()
-    cur.close()
-    if user_data:
-        return User(user_data[0], user_data[1], user_data[2])
-    else:
-        return None
-
-# Crea una función load_user(user_id) que busca y devuelve un objeto User en la base de 
-# datos correspondiente al user_id proporcionado.
-@login_manager.user_loader
-def load_user(id):
-   cur = mysql.connection.cursor()
-   cur.execute('SELECT * FROM users WHERE id = %s', (id))
-   user_data = cur.fetchone()
-   cur.close()
-   if user_data:
-      return User(user_data[0], user_data[1], user_data[2])
-   else:
-     return None
-
-# Crea una función de verificación de inicio de sesión (login) que recibe un usuario y una contraseña y 
-# devuelve un objeto User si la autenticación es correcta o None en caso contrario.
-def verificar_login(username, password):
-    cur = mysql.connection.cursor()
-    cur.execute('SELECT username, password FROM users WHERE username = %s AND password = %s', (username, password))
-    user_data = cur.fetchone()
-    cur.close()
-    if user_data:
-        return User(user_data[0], user_data[1], user_data[2])
-    else:
-        return None
-
-# Agrega la decoración @login_manager.unauthorized_handler encima de la función de verificación 
-# de inicio de sesión para manejar la redirección a la página de inicio de sesión en caso de que el usuario 
-# no esté autenticado.
-@login_manager.unauthorized_handler
-def unauthorized():
-    return "no tai registrao"
-
 #secret key
 app.config['SECRET_KEY'] = os.urandom(24)
 
@@ -123,6 +80,30 @@ def register():
   </form>
         '''
 
+  
+@login_manager.user_loader
+def load_user(user_id):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM users WHERE id = %s', (user_id,))
+    user_data = cur.fetchone()
+    cur.close()
+    if user_data:
+        return User(user_data[0], user_data[1], user_data[2])
+    else:
+        return None
+
+
+def verificar_login(username, password):
+    cur = mysql.connection.cursor()
+    cur.execute('SELECT * FROM users WHERE username = %s AND password = %s', (username, password))
+    user_data = cur.fetchone()
+    cur.close()
+    if user_data:
+        return User(user_data[0], user_data[1], user_data[2])
+    else:
+        return None
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -130,17 +111,16 @@ def login():
         # Obtener los datos del formulario
         username = request.form['username']
         password = request.form['password']
-        id = request.form['id']
 
         # Verificar si los datos son correctos
-        cur = mysql.connection.cursor()
-        cur.execute('SELECT * FROM users WHERE username = %s AND password = %s AND id = %s', (username, password, id))
-        user = cur.fetchone()
-        cur.close()
-
+        user = verificar_login(username, password)
         if user:
             # Iniciar sesión exitosamente
-            return redirect(url_for('privado'))
+            login_user(user)
+
+            # Redirigir al usuario a la página que intentaba acceder originalmente
+            next_page = request.args.get('next')
+            return redirect(next_page or url_for('privado'))
         else:
             # Mostrar un mensaje de error
             return 'Nombre de usuario o contraseña incorrectos'
@@ -150,10 +130,11 @@ def login():
         <form method="post">
             <p>Nombre de usuario: <input type="text" name="username"></p>
             <p>Contraseña: <input type="password" name="password"></p>
-            <p>ID: <input type="number" name="id"</p>
             <p><input type="submit" value="Iniciar sesión"></p>
         </form>
     '''
+
+
 
 @app.route('/privado')
 @login_required
