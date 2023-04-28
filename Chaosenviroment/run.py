@@ -1,5 +1,5 @@
 #Importar
-from flask import Flask, request, redirect, url_for, flash
+from flask import Flask, request, redirect, url_for, flash, render_template 
 from flask_mysqldb import MySQL
 import os
 from flask_login import login_required, current_user
@@ -34,7 +34,7 @@ app.config['SECRET_KEY'] = os.urandom(24)
 #Crear rutas con sus correspondientes funciones
 @app.route('/')
 def holamundo():
-    return 'sistema del caos activado'
+    return render_template("intento.html")
 
 #Maquina de registro
 @app.route('/register', methods=['GET', 'POST'])
@@ -61,24 +61,7 @@ def register():
         flash('Registro exitoso. Por favor, inicie sesión.')
         return redirect(url_for('login'))
     
-    return '''
-        <h2>Registro</h2>
-        <form method="POST">
-        <div class="form-group">
-      <label for="username">Nombre:</label>
-      <input type="text" name="username" id="name" class="form-control" required>
-        </div>
-        <div class="form-group">
-      <label for="email">Email:</label>
-      <input type="email" name="email" id="email" class="form-control" required>
-    </div>
-    <div class="form-group">
-      <label for="password">Contraseña:</label>
-      <input type="password" name="password" id="password" class="form-control" required>
-    </div>
-    <button type="submit" class="btn btn-primary">Registrarse</button>
-  </form>
-        '''
+    return render_template("register2.html")
 
 #funcion login_loader
 @login_manager.user_loader
@@ -125,13 +108,7 @@ def login():
             return 'Nombre de usuario o contraseña incorrectos'
 
     # Si el método es GET, mostrar el formulario de login
-    return '''
-        <form method="post">
-            <p>Nombre de usuario: <input type="text" name="username"></p>
-            <p>Contraseña: <input type="password" name="password"></p>
-            <p><input type="submit" value="Iniciar sesión"></p>
-        </form>
-    '''
+    return render_template("login.html")
 
 
 
