@@ -110,12 +110,23 @@ def login():
     # Si el método es GET, mostrar el formulario de login
     return render_template("login.html")
 
-
+#funcion bloqueo no autorizado
+@login_manager.unauthorized_handler
+def unauthorized():
+    return 'Debes iniciar sesión para acceder a esta página', 401
 
 @app.route('/privado')
 @login_required
 def privado():
-    return 'Bienvenido al sistema del caos mi estimado wapeton'
+    return render_template("privado.html")
+
+
+#funcion logout
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 #Ejecutar nuestra app cuando ejecutemos este archivo run.py
 if __name__ == '__main__':
